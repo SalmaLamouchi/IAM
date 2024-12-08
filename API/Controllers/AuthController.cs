@@ -29,6 +29,18 @@ namespace API.Controllers
             }
         }
 
+        [Route("register")]
+        [HttpPost]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            var result = await _authService.RegisterAsync(request);
+            if (result == "User already exists")
+            {
+                return BadRequest(new { Message = result });
+            }
+            return Ok(new { Token = result });
+        }
+
         [HttpPost("revoke")]
         public async Task<IActionResult> RevokeToken([FromBody] string token)
         {

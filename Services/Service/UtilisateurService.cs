@@ -11,7 +11,7 @@
 
 //namespace Services.Service
 //{
-//    internal class UtilisateurService : ServiceAsync<Utilisateur, UtilisateurDto>, IAuthService
+//    internal class UtilisateurService : ServiceAsync<Utilisateur, UtilisateurDto>, IUtilisateurService
 //    {
 //        public UtilisateurService(IRepositoryAsync<Utilisateur> repository, IMapper mapper) : base(repository, mapper)
 //        {

@@ -65,6 +65,36 @@ namespace Services.Service
             return token;
         }
 
+        public async Task<string?> RegisterAsync(RegisterRequest request)
+        {
+            // Vérifiez si l'utilisateur existe déjà
+            var existingUser = await _authRepository.GetUserByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                return "User already exists"; // Retournez une erreur si l'utilisateur existe déjà
+            }
+
+            // Hachage du mot de passe
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            // Créez l'objet utilisateur
+            var newUser = new Utilisateur
+            {
+                Email = request.Email,
+                Motdepasse = hashedPassword,
+                Matricule = request.Matricule,
+                IdRole = request.RoleId
+            };
+
+            // Enregistrez l'utilisateur dans la base de données
+            await _authRepository.AddUserAsync(newUser);
+
+            // Optionnel : Générer un token JWT pour le nouvel utilisateur
+            var userDto = _mapper.Map<UtilisateurDto>(newUser);
+            var token = _tokenService.GenerateToken(userDto);
+
+            return token; // Retournez un token ou un message de succès
+        }
 
         // Method to revoke the token
         public void RevokeToken(string token)
